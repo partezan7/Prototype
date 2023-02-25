@@ -38,4 +38,16 @@ public class ProtoController {
         model.put("message", messages);
         return "main-page";
     }
+
+    @PostMapping("filter")
+    public String find(@RequestParam String filter, Map<String, Object> model) {
+        Iterable<Message> messages;
+        if (filter == null || filter.isEmpty()){
+            messages = repository.findAll();
+        } else {
+            messages = repository.findByTag(filter);
+        }
+        model.put("message", messages);
+        return "main-page";
+    }
 }
