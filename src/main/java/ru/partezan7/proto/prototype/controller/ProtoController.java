@@ -15,11 +15,6 @@ public class ProtoController {
     @Autowired
     private MessageRepository repository;
 
-    @GetMapping("/")
-    public String greeting(Map<String, Object> model) {
-        return "start-page";
-    }
-
     @GetMapping("/main")
     public String mainPage(Map<String, Object> model) {
         Iterable<Message> messages = repository.findAll();
