@@ -9,6 +9,7 @@ import ru.partezan7.proto.prototype.entity.Message;
 import ru.partezan7.proto.prototype.repository.MessageRepository;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class ProtoController {
@@ -40,6 +41,17 @@ public class ProtoController {
         } else {
             messages = repository.findByTag(filter);
         }
+        model.put("messages", messages);
+        return "main-page.html";
+    }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam String id, Map<String, Object> model) {
+        long parseId = Long.parseLong(id);
+        Optional<Message> byId = repository.findById(parseId);
+        if (byId.isPresent()) repository.deleteById(parseId);
+
+        Iterable<Message> messages = repository.findAll();
         model.put("messages", messages);
         return "main-page.html";
     }
