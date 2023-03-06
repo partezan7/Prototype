@@ -1,0 +1,9 @@
+spring:
+  security:
+    user:
+      name: u
+      password: p
+
+logging:
+  level:
+    org.springframework.security.web: DEBUG

@@ -14,18 +14,21 @@
     <form method="post" action="/main">
         <input type="text" name="text" placeholder="Enter message">
         <input type="text" name="tag" placeholder="Tag">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <button type="submit">Add</button>
     </form>
 </div>
 <div>
     <form method="post" action="/delete">
         <input type="text" name="id" placeholder="Enter id">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <button type="submit">Delete</button>
     </form>
 </div>
 
 <form method="post" action="/filter">
     <input type="text" name="filter" placeholder="Enter tag">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
     <button type="submit">Find</button>
 </form>
 <div>Message list:</div>
