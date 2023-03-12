@@ -11,6 +11,7 @@ public class MvcConfig implements WebMvcConfigurer {
         // Available without authentication
         registry.addViewController("/").setViewName("home");
         registry.addViewController("/public").setViewName("public");
+        registry.addViewController("/registration").setViewName("registration");
         // Authentication
         registry.addViewController("/login").setViewName("login");
         // Available only with authentication

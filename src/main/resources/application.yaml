@@ -1,8 +1,8 @@
-spring:
-  security:
-    user:
-      name: u
-      password: p
+#spring:
+#  security:
+#    user:
+#      name: u
+#      password: p
 
 logging:
   level:
