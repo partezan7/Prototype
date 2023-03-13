@@ -5,12 +5,12 @@
 </head>
 <body>
 <div th:if="${message}">
-   {{message}}
+    <td data-th-text="${message}">...</td>
 </div>
 <form th:action="@{/registration}" method="post">
     <div><label> User Name : <input type="text" name="username"/> </label></div>
     <div><label> Password: <input type="password" name="password"/> </label></div>
-    <div><input type="submit" value="Sign In"/></div>
+    <div><input type="submit" value="Add user"/></div>
 </form>
 <p>Click <a th:href="@{/}">here</a> to return to the homepage</p>
 </body>

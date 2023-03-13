@@ -30,6 +30,7 @@ public class WebSecurityConfig {
                         .loginPage("/login")
                         .permitAll()
                 )
+//                .authenticationProvider(getDaoAuthenticationProvider(getPasswordEncoder(), users(dataSource)))
                 .logout((logout) -> logout.permitAll())
                 .csrf().csrfTokenRepository(csrfTokenRepository());
 
@@ -48,9 +49,27 @@ public class WebSecurityConfig {
 //                .roles("USER")
 //                .build();
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+
         users.setUsersByUsernameQuery("select username, password, active from usr where username=?");
-        users.setAuthoritiesByUsernameQuery("select u.username, ur.roles from user u inner join user_role ur on u.id = ur.user_id where u.username=?");
+        users.setAuthoritiesByUsernameQuery("select u.username, ur.roles from usr u inner join user_role ur on u.id = ur.user_id where u.username=?");
 
         return users;
     }
+
+//    @Bean(name = "myPasswordEncoder")
+//    public PasswordEncoder getPasswordEncoder() {
+//        DelegatingPasswordEncoder delPasswordEncoder = (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
+//        delPasswordEncoder.setDefaultPasswordEncoderForMatches(bcryptPasswordEncoder);
+//        return delPasswordEncoder;
+//    }
+//
+//    @Bean
+//    @Autowired
+//    public DaoAuthenticationProvider getDaoAuthenticationProvider(@Qualifier("myPasswordEncoder") PasswordEncoder passwordEncoder, UserDetailsManager userDetailsServiceJDBC) {
+//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+//        daoAuthenticationProvider.setUserDetailsService(userDetailsServiceJDBC);
+//        return daoAuthenticationProvider;
+//    }
 }
