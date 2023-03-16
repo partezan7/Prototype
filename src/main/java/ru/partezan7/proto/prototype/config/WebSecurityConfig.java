@@ -1,10 +1,15 @@
 package ru.partezan7.proto.prototype.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -32,7 +37,9 @@ public class WebSecurityConfig {
                 )
 //                .authenticationProvider(getDaoAuthenticationProvider(getPasswordEncoder(), users(dataSource)))
                 .logout((logout) -> logout.permitAll())
-                .csrf().csrfTokenRepository(csrfTokenRepository());
+                .csrf().csrfTokenRepository(csrfTokenRepository())
+                .and()
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
@@ -43,33 +50,24 @@ public class WebSecurityConfig {
 
     @Bean
     public UserDetailsManager users(DataSource dataSource) {
-//        UserDetails user = User.withDefaultPasswordEncoder()
-//                .username("user")
-//                .password("password")
-//                .roles("USER")
-//                .build();
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-
         users.setUsersByUsernameQuery("select username, password, active from usr where username=?");
         users.setAuthoritiesByUsernameQuery("select u.username, ur.roles from usr u inner join user_role ur on u.id = ur.user_id where u.username=?");
-
         return users;
     }
 
-//    @Bean(name = "myPasswordEncoder")
-//    public PasswordEncoder getPasswordEncoder() {
-//        DelegatingPasswordEncoder delPasswordEncoder = (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
-//        delPasswordEncoder.setDefaultPasswordEncoderForMatches(bcryptPasswordEncoder);
-//        return delPasswordEncoder;
-//    }
-//
-//    @Bean
-//    @Autowired
-//    public DaoAuthenticationProvider getDaoAuthenticationProvider(@Qualifier("myPasswordEncoder") PasswordEncoder passwordEncoder, UserDetailsManager userDetailsServiceJDBC) {
-//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-//        daoAuthenticationProvider.setUserDetailsService(userDetailsServiceJDBC);
-//        return daoAuthenticationProvider;
-//    }
+    @Bean(name = "myPasswordEncoder")
+    public PasswordEncoder getPasswordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    @Autowired
+    public DaoAuthenticationProvider getDaoAuthenticationProvider(@Qualifier("myPasswordEncoder") PasswordEncoder passwordEncoder, UserDetailsManager userDetailsServiceJDBC) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        daoAuthenticationProvider.setUserDetailsService(userDetailsServiceJDBC);
+        return daoAuthenticationProvider;
+    }
+
 }
