@@ -18,6 +18,7 @@ public class Message {
     private Integer id;
     private String text;
     private String tag;
+    private User author;
 
     public Message(String text, String tag) {
         this.text = text;
