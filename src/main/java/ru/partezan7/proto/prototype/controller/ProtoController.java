@@ -33,7 +33,7 @@ public class ProtoController {
             @AuthenticationPrincipal User user,
             @RequestParam String text,
             @RequestParam String tag, Map<String, Object> model) {
-        Message message = new Message(text, tag);
+        Message message = new Message(text, tag, user);
         repository.save(message);
 
         Iterable<Message> messages = repository.findAll();
