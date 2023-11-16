@@ -2,9 +2,7 @@ package ru.partezan7.proto.prototype.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.partezan7.proto.prototype.entity.Message;
 import ru.partezan7.proto.prototype.entity.User;
 import ru.partezan7.proto.prototype.repository.MessageRepository;
@@ -50,17 +48,23 @@ public class ProtoController {
             messages = repository.findByTag(filter);
         }
         model.put("messages", messages);
-        return "main-page.html";
+        return "redirect:/main";
     }
 
     @PostMapping("/delete")
-    public String delete(@RequestParam String id, Map<String, Object> model) {
-        long parseId = Long.parseLong(id);
+    public String delete(@AuthenticationPrincipal User user,
+                         @RequestParam String id, Map<String, Object> model) {
+        long parseId;
+        try {
+            parseId = Long.parseLong(id);
+        } catch (NumberFormatException exception) {
+            parseId = 0;
+        }
         Optional<Message> byId = repository.findById(parseId);
-        if (byId.isPresent()) repository.deleteById(parseId);
+        if (byId.isPresent() && byId.get().getAuthor().getId().equals(user.getId())) repository.deleteById(parseId);
 
         Iterable<Message> messages = repository.findAll();
         model.put("messages", messages);
-        return "main-page.html";
+        return "redirect:/main";
     }
 }
