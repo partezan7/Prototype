@@ -8,7 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -29,12 +29,10 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/public", "/registration").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/login")
-                        .permitAll()
-                )
+                        .permitAll())
 //                .authenticationProvider(getDaoAuthenticationProvider(getPasswordEncoder(), users(dataSource)))
                 .logout((logout) -> logout.permitAll())
                 .csrf().csrfTokenRepository(csrfTokenRepository())
@@ -50,7 +48,8 @@ public class WebSecurityConfig {
 
     @Bean(name = "myPasswordEncoder")
     public PasswordEncoder getPasswordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+//        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean

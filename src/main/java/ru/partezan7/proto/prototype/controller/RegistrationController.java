@@ -1,5 +1,6 @@
 package ru.partezan7.proto.prototype.controller;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,8 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(User user, Map<String, Object> model) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+        user.setPassword(encoder.encode(user.getPassword()));
         User userFromDB = userRepository.findByUsername(user.getUsername());
         if (userFromDB != null) {
             model.put("message", "User exists!");
